@@ -1,0 +1,176 @@
+﻿/***整站统一的公共基础样式，对默认样式作统一设置***/
+*{margin:0;padding:0;line-height: 150%; }
+body,td{color:#5D5D5D;font-size:12px;font-family:Tahoma,Verdana,Helvetica,宋体,微软雅黑,Arial,"Arial Unicode MS",MingLiu,PMingLiu,"MS Gothic",sans-serief;
+line-height: 150%;word-wrap:break-word;}
+
+ table {
+
+word-wrap:break-word;
+}
+div {
+word-wrap:break-word;
+}
+
+/*** 列表 ***/
+ul {list-style-type:none;}
+ul.point {list-style-type:none;}
+ul.point li {background-image:url(../images/point_01.gif);background-repeat:no-repeat;background-position:0px 7px;padding-left:15px;color:#5D5D5D;font-size:12px;}
+ul.pgray {list-style-type:none;}
+ul.pgray li {background-image:url(../images/point_02.gif);background-repeat:no-repeat;background-position:0px 7px;padding-left:15px;color:#5D5D5D;font-size:12px;}
+ul.pred {list-style-type:none;}
+ul.pred li {background-image:url(../images/point_03.gif);background-repeat:no-repeat;background-position:0px 7px;padding-left:15px;color:#5D5D5D;font-size:12px;}
+ul.pblue {list-style-type:none;}
+ul.pblue li {background-image:url(../images/point_04.gif);background-repeat:no-repeat;background-position:0px 7px;padding-left:15px;color:#134BD2;font-size:12px;}
+
+
+h1{font-size: 16px;font-weight:bold;margin:3px}
+img{border:none;}
+input select{ color:#9A9A9A;padding:2px 2px 0px 2px;line-height:120%;height:16px;}
+.textinput{ border:solid #B2B2B2 1px;color:#9A9A9A;padding:2px 2px 0px 2px;line-height:120%;height:15px;}
+.textsel{ border:solid #B2B2B2 1px;color:#9A9A9A;padding:2px 2px 0px 2px;line-height:120%;height:20px;}
+.border{border:1px dashed gray;padding:5px;}
+.debugborder{border:1px dashed gray;}
+.floatLeft	{float:left}
+.floatRight	{float:right} 
+.center{margin:0px auto; text-align:center;}
+
+/***字体默认样式类，可扩展***/
+.small		{font-size:12px;}
+.big		{font-size:14px;}
+.font12		{font-size:12px;}
+.font14		{font-size:14px;}
+.font16		{font-size:16px;}
+.font18		{font-size:18px;}
+.font20		{font-size:20px;}
+.font26		{font-size:26px;}
+.bold		{font-weight:bold;}
+.normal		{font-weight:normal;}
+.txtRight	{text-align:right;}
+.txtLeft	{text-align:left;}
+.txtCenter { text-align:center;}
+
+/***色彩默认样式类，可扩展***/
+.white		{ color:white;}
+.red		{ color:#ED1C24;}
+.dred		{ color:#ab0200;}
+.gray		{ color:#5D5D5D;}
+.graylight  { color:#AAAAAA;}
+.green		{ color:#006F4F;}
+.black		{ color:black;}
+.blue       { color:#00aeff;}
+.dblue      { color:#004ea2;}
+.org        { color:#ff8a00;}
+
+.hide{display:none;}
+.block{display:block;}
+.clear{clear:both;}
+
+/*** 默认超链接样式 ***/
+a {color:#5D5D5D; text-decoration:underline;}
+
+a.lnk {color:#5D5D5D; text-decoration:none;}
+a.lnk:hover {color:#5D5D5D; text-decoration:underline;}
+
+a.lnkblack {color:#000; text-decoration:underline;}
+a.lnkblackon {color:#000; text-decoration:none;}
+a.lnkblackon:hover {color:#000; text-decoration:underline;}
+
+a.lnkwhite {color:#fff; text-decoration:underline;}
+a.lnkwhiteon {color:#fff; text-decoration:none;}
+a.lnkwhiteon:hover {color:#fff; text-decoration:underline;}
+
+a.lnkred {color:#ff0000; text-decoration:underline;}
+a#red {color:#ff0000; text-decoration:none;font-size:12px;}
+a#red:hover {color:#ff0000; text-decoration:underline;}
+a.lnkredon {color:#ff0000; text-decoration:none;}
+a.lnkredon:hover {color:#ff0000; text-decoration:underline;}
+
+a.lnkdred {color:#ab0200; text-decoration:underline;}
+a.lnkdredon {color:#ab0200; text-decoration:none;}
+a.lnkdredon:hover {color:#ab0200; text-decoration:underline;}
+
+a.lnkgreen{color:#006F4F;text-decoration:underline;}
+a.lnkgreenon{color:#006F4F;text-decoration:none;}
+a.lnkgreenon:hover {color:#006F4F; text-decoration:underline;}
+
+a.lnkblue {color:#00a0e9; text-decoration:underline;}
+a.lnkblueon {color:#00a0e9; text-decoration:none;}
+a.lnkblueon:hover {color:#51C7FF; text-decoration:underline;}
+
+a.lnkdblue {color:#004ea2;text-decoration:underline;}
+a.lnkdblueon {color:#004ea2;text-decoration:none;}
+a.lnkdblueon:hover {color:#004ea2; text-decoration:underline;}
+
+a.lnkorg {color:#ff8a00; text-decoration:underline;}
+a.lnkorgon {color:#ff8a00; text-decoration:none;}
+a.lnkorgon:hover {color:#ff8a00; text-decoration:underline;}
+
+a.btn_yhj {background:url(../images/btn_yhj.png) no-repeat;_background:none;_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="http://www.htinns.com/images/btn_yhj.png" ,sizingMethod="crop");width:54px;height:24px;border:0px;line-height:24px;color:#186EC3;font-size:12px;cursor:pointer;display:block;text-decoration:none;text-align:center;margin:0px 3px 5px 0px;}
+a.btn_yhj:hover{background:url(../images/btn_yhj.png) no-repeat 0px -24px;_background:none;_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="http://www.htinns.com/images/btn_yhj.png" ,sizingMethod="crop");}
+
+
+/*** 预订按钮 ***/
+.btn_40 {background:url(../images/btn_red_40.gif) no-repeat; width:40px; height:20px; border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_50 {background:url(../images/btn_red_50.gif) no-repeat; width:50px;height:20px;border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_51 {background:url(../images/btn_gray_50.gif) no-repeat; width:50px;height:20px;border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_60 {background:url(../images/btn_red_60.gif) no-repeat; width:60px; height:20px; border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;} 
+.btn_70 {background:url(../images/btn_red_70.gif) no-repeat; width:70px; height:20px; border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}  
+.btn_80 {background:url(../images/btn_red_80.gif) no-repeat; width:80px; height:20px; border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_100 {background:url(../images/btn_red_100.gif) no-repeat; width:100px; height:20px; border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_120 {background:url(../images/btn_red_120.gif) no-repeat; width:120px; height:20px; border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_140 {background:url(../images/btn_red_140.gif) no-repeat; width:140px; height:20px; border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_210 {background:url(../images/btn_red_210.gif) no-repeat; width:210px; height:20px; border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_230 {background:url(../images/btn_red_230.gif) no-repeat; width:230px; height:20px; border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_org50 {background:url(../images/btn_org_50.gif) no-repeat; width:50px;height:20px;border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_g50{background:url(../images/btn_gray_50.gif) no-repeat; width:50px; height:20px; border:0px; padding-top:1px; color:#fff; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_w50{background:url(../images/btn_white_50.gif) no-repeat; width:50px; height:20px; border:0px; padding-top:1px; color:#000; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_w57{background:url(../images/btn_white_57.gif) no-repeat; width:57px; height:20px; border:0px; padding-top:1px; color:#000; font-size:12px; cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_bigred_80{background:url(../images/btn_bigred_80.gif) no-repeat; width:80px;height:25px;border:0px;line-height:25px;color:#fff;font-size:12px;cursor:pointer;display:block;text-decoration:none;text-align:center;font-weight:bold;}
+.btn_bigred_100{background:url(../images/btn_bigred_100.gif) no-repeat; width:100px;height:25px;border:0px;line-height:25px;color:#fff;font-size:12px;cursor:pointer;display:block;text-decoration:none;text-align:center;font-weight:bold;}
+.btn_bigred_130{background:url(../images/btn_bigred_130.gif) no-repeat; width:130px;height:25px;border:0px;line-height:25px;color:#fff;font-size:12px;cursor:pointer;display:block;text-decoration:none;text-align:center;font-weight:bold;}
+.btn_bigwhite_80{background:url(../images/btn_bigwhite_80.gif) no-repeat; width:80px;height:25px;border:0px;line-height:25px;color:#000;font-size:12px;cursor:pointer;display:block;text-decoration:none;text-align:center;}
+.btn_bigwhite_100{background:url(../images/btn_bigwhite_100.gif) no-repeat; width:100px;height:25px;border:0px;line-height:25px;color:#000;font-size:12px;cursor:pointer;display:block;text-decoration:none;text-align:center;}
+
+/*** 汉庭Logo ***/
+.logo1{float:left;background:url(../images/logo1.gif) no-repeat center;width:36px;height:24px;}
+.logo2{float:left;background:url(../images/logo2.gif) no-repeat center;width:36px;height:24px;}
+.logo3{float:left;background:url(../images/logo3.gif) no-repeat center;width:36px;height:24px;}
+
+
+/*** 临时调试用样式，不用于生产 ***/
+.black01{font-size:12px;color: #000000;line-height: 20px;}
+.black02{font-size:12px;color: #000000;line-height: 20px; font-weight:bold;}
+.black03{font-size:14px;color: #000000;line-height: 24px; font-weight:bold;}
+.black04{font-size:16px;color: #000000;line-height: 30px; font-weight:bold;}
+.black05{font-size:18px;color: #000000;line-height: 35px; font-weight:bold;}
+.black06{font-size:20px;color: #000000;line-height: 40px; font-weight:bold;}
+.black07{font-size:26px;color: #000000;line-height: 45px; font-weight:bold;}
+.dred07{font-size:26px;color: #ab0200;line-height: 45px; font-weight:bold;} 
+
+
+.windowe_4
+{
+	border: 2px solid #000000;
+}.windowe_3
+{
+	border: 1px solid #CCCBED;
+}.windowe_2
+{
+	border: 1px solid #000000;
+}.windowe_1
+{
+	border: 1px solid #CCCBED;
+}
+
+.wde__title
+{
+	height: 25px;
+	background: url(../images/window_bg.gif);
+	font-weight: bold;
+	color: #000000;
+	padding: 5px;
+	margin-bottom: 5px;
+}.wde__cont
+{
+	padding: 0px 10px 0px 10px;
+}

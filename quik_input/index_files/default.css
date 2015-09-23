@@ -1,0 +1,85 @@
+﻿#panel_flash { margin-left:auto; margin-right:auto; width:962px; height:300px; *width:965px;}
+#main { padding:10px 0 0 0; margin-left:auto; margin-right:auto; width:965px; margin-bottom:5px;  *margin-bottom:0;}
+#panel_search { width:265px; height:300px; cursor:default; background-color:Transparent; float:left; background:url(../images/panel_searchbg.gif); background-repeat:no-repeat; }
+#panel_searchfore { margin:5px; }
+#panel_searchfore div.head { padding:0 0 0 5px;}
+#panel_searchfore div.head .floatleft{ float:left; padding-right:6px;}
+#panel_searchfore div.head .floatleft a { color:#000; }
+#panel_searchfore div.head .floatleft a:hover { color:#FE9601; text-decoration:none;}
+#panel_searchfore div.body { margin:5px 10px; }
+#tbbody { width:100%; }
+#tbbody td { height:25px; }
+#tbbody td.c1 { width:15px; padding:5px 4px 0 0;  *padding:3px 4px 0 0;
+color:#d5121a; }
+#tbbody td.c2 { width:60px; *width:70px; padding:5px 8px 0 0;  *padding:3px 8px 0 0;}
+#tbbody td.c3 { padding:5px 0 0 0;  *padding:3px 0 0 0; *width:135px;}
+#tbbody input[type="text"] { width:130px; padding:4px 0 4px 5px;  *padding:2px 0 6px 5px;
+border:solid 1px #C0C0C0; }
+#panel_searchfore div.foot1 { padding:6px 0 5px 168px; }
+#panel_searchfore div.foot2 a { display:block; width:14px; height:13px; text-decoration:none; float:left; margin-top:2px; }
+a.left_more:link { background-image:url('../images/left_icon01.gif'); background-repeat:no-repeat; }
+a.left_more:visited { background-image:url('../images/left_icon01.gif'); background-repeat:no-repeat; }
+a.left_more:hover { background-image:url('../images/left_icon02.gif'); background-repeat:no-repeat; }
+a.left_more:active { background-image:url('../images/left_icon01.gif'); background-repeat:no-repeat; }
+#panel_research { margin-left:16px; float:left; }
+#researchbg { width:196px; border:solid 1px #CFCFCF; padding:1px; margin:0 0 0 1px; }
+#researchfore { background-color:#F1F1F1; height:140px;  *height:140px;
+}
+#researchfore p { padding:3px 0 1px 10px; }
+#researchfore div.head { width:167px; height:1px; border-bottom:solid 1px #CFCFCF; margin-left:15px; background-color:White; _background-color:Transparent; }
+#researchfore div.body { overflow:hidden; height:87px;  *height:89px;
+}
+#researchfore div.foot { padding-top:2px; background:url('../images/all_pics.gif') no-repeat 10px -1330px; }
+#panel_discount { width:232px; float:left; margin-left:15px; _margin-left:10px; background:url("../images/arrow_point.gif") repeat-x 0px 24px; }
+#panel_discount div.head { padding-bottom:5px; _padding-bottom:12px; color:#000000; font-weight:bold; height:28px; }
+#panel_discount div.head .more { width:18px; height:18px; background:url('../images/all_pics.gif') no-repeat 0px -1360px; float:right; }
+#panel_discount div.body { padding-left:8px; }
+#panel_discount div.body li { margin-top:2px; }
+#tbresearch label { vertical-align:super; *vertical-align:top;
+}
+#tbresearch input[type="radio"] { border:0; }
+#tbresearch { width:90%; margin-left:10px; height:85px; }
+#tbresearch td { background-color:Transparent; }
+#tbresearch input { border:0px solid red; }
+#navbottomright a { text-decoration:underline; }
+#btn_getSearch { width:132px; height:36px; background:url('../images/btn_getSearch.gif'); background-repeat: no-repeat; display:block; text-align:center; margin-left:55px; }
+#btn_survey { color: Black; float:left; margin-left:100px; _margin-left:50px; background-color:Transparent; background: url('../images/all_pics.gif') no-repeat -50px -1300px; }
+#btn_survey_result { float:left; margin-left:10px; background-color:Transparent; }
+.newflash_right { float:right; width:688px; height:300px; }
+.sub-promotion { border: 2px solid #e70014; width:186px; height:206px; }
+.sub-promotion .a-mall { color: #A3061F; font-size: 14px; font-weight: normal; }
+.sub-promotion .a-tao { color: #FF6600; font-size: 14px; font-weight: normal; }
+.sub-promotion a { color: #3E3E3E; font-family: 'Verdana', "宋体"; font-size: 12px; font-weight: normal; }
+.sub-promotion a:hover { color: #FF6600; }
+.sub-promotion h3 { color:#fff; line-height:26px; font-size:12px; margin-left:2px; }
+.sub-promotion .sp-hd { background-color: #e70014; height: 25px; position: relative; width: 100%; }
+.sub-promotion .sp-hd .txt-indicator { color: #FFFFFF; font-size: 11px; position: absolute; right: 51px; top: 5px; }
+.sub-promotion .sp-hd .txt-indicator em { font-weight: bold; }
+.sub-promotion .sp-hd a { background: url("../images/sprites.gif") no-repeat; display: block; overflow: hidden; position: absolute; }
+.sub-promotion .sp-hd .sp-prev { background-position: -133px -110px; height: 14px; right: 28px; top: 6px; width: 15px; }
+.sub-promotion .sp-hd .sp-next { background-position: -148px -110px; height: 14px; right: 11px; top: 6px; width: 16px; }
+.sub-promotion .sp-hd .sp-prev:hover { background-position: -133px -124px; }
+.sub-promotion .sp-hd .sp-next:hover { background-position: -148px -124px; }
+.sub-promotion .sp-hd .disable:hover { }
+.sub-promotion .sp-hd .sp-prev { }
+.sub-promotion .sp-hd .disable { }
+.sub-promotion .sp-hd .sp-prev.disable { background-position: -133px -138px; }
+.sub-promotion .sp-hd .sp-next.disable { background-position: -148px -138px; }
+.sub-promotion .sub-promotion-content { height: 180px; overflow: hidden; width: 100%; }
+.sub-promotion .con-of-3 li {height: 60px; overflow: hidden; position: relative; width: 185px; margin:0; padding:0; float:left; }
+.sub-promotion .con-of-3 li .thumbnail { display: block; height: 50px; left: 12px; overflow: hidden; position: absolute; top: 0; width: 50px; }
+.sub-promotion .con-of-3 li p { line-height: 24px; padding-left: 72px; padding-right: 10px; }
+
+.focus {overflow: hidden; position: relative; }
+.focus-m { float: left; height: 300px; overflow: hidden; position: relative; width: 100%; z-index: 10; }
+.focus-m ul { margin-right: 201px; position: absolute; }
+.focus-m li { height: 300px; }
+.focus-m li img {height: 300px; vertical-align: top; width: 500px; }
+.focus-n { float: left; margin-left: -201px; width: 201px; }
+.focus-n ul { padding-top: 1px; }
+.focus-n li { background: url("../images/focus_01.png") no-repeat scroll right -52px transparent; color: #2B6BAD; cursor: pointer; height: 43px; margin-top: -1px; overflow: hidden; padding-top: 8px; position: relative; z-index: 20; }
+.focus-n li a { cursor: pointer; display: block; height: 33px; overflow: hidden; padding:10px; text-align:center; text-decoration: none; }
+.focus-n li a:hover { color: #2B6BAD;}
+.focus-n li img { height: 50px; left: 11px; position: absolute; top: 5px; width: 67px; }
+.focus-n .select { background-position: right 0; color: #000000; z-index: 25; }
+.focus-n .select a, .focus-n .select a:hover { color: #000000; }

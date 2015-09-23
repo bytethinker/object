@@ -1,0 +1,1473 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>元对象数据模型管理测试</title>
+    <style type="text/css">
+		legend
+		{
+			font-weight:bold;
+		}
+		
+		th
+		{
+			text-align:left;
+		}
+		
+		.relationBox span
+		{
+			width:15%;
+		}
+		.key
+		{
+			color:#999;
+		}
+		
+		#tbdEntity
+		{
+			word-break:break;
+		}
+		
+		.searchList
+		{
+			position:absolute;
+			left:-999px;
+			top:-999px;
+			z-index:2;
+			border:1px outset #CCC;
+		}
+	</style>
+	<style>
+	body
+	{
+		background-color:#FFC;
+	}
+	table
+	{
+		border-collapse:collapse;
+	}
+	td
+	{
+		border:2px solid #F90;/*rgb(209,73,78);*/
+		background-color:FFC;
+		border-width:3px 2px;
+		/*
+		width:4em;
+		height:2em;
+		*/
+		text-align:center;
+		border-colaspace:colaspace;
+		font-weight:bold;
+	}
+	td.levelTitle
+	{
+		color:#FFF;
+		background-color:#369;
+		border:2px dash #F90;
+	}
+	h1
+	{
+		color:#FFF;/*#123555;*/
+		background-color:#369;/*rgb(230,155,3);*//*rgb(209,73,78);*/
+		padding:.3em .5em;
+	}
+	
+	.mtable table
+	{
+		width:100%;
+		height:100%;
+		border:2px solid #CCC;
+	}
+	</style>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/pinyinEngine.js"></script>
+	<script type="text/javascript">
+	var Level = [
+	];
+	var MultiClass = [{}, null, null];//[body, child, parent]
+	MultiClass.field = {'BODY':0, 'CHILD':1, 'PARENT':2};
+
+	var CLASS_KEY = null;
+	var ATTR_KEY = null;
+	$(window).bind('load', function()
+	{
+		$('input[type="text"]').bind('focus', function()
+		{
+			$(this).css('background-color', '#FFA');
+			$(this).select();
+		});
+		
+		$('input[type="text"]').bind('blur', function()
+		{
+			$(this).css('background-color', '#FFF');
+		});
+		
+		var O = [
+				['001', '长'],
+				['002', '宽'],
+				['003', '米'],
+				['005', '单位'],
+				['006', '名称'],
+				['007', '电脑桌'],
+				['008', '属性'],
+				['009', '类'],
+				['010', '王某人的电脑桌'],
+				['011', '#实体1'],
+				['012', '2.17'],
+				['013', '0.4'],
+				['014', '书'],
+				['015', '书名'],
+				['016', '六级词汇（词根+联想）记忆法'],
+				['017', '作者'],
+				['018', '俞敏洪'],
+				['019', '出版社'],
+				['020', '世界图书出版社'],
+				['021', '定价'],
+				['022', '25.00'],
+				['023', '元'],
+				['024', '出版日期'],
+				['025', '2006.09.02'],
+				['026', '开本'],
+				['027', '1/32'],
+				['028', '页数'],
+				['029', '318'],
+				['030', '页'],
+				['031', '装帧'],
+				['032', '便携版'],
+				['033', 'ISBN'],
+				['034', '987-7-5062-7336-7/H·759'],
+				['035', '封面图片'],
+				['036', '图片'],
+				['037', '图书简介'],
+				['038', '“词根+联想”实用有趣，……'],//插图风趣，加深记忆；<br />打破传统编排，合理重量级六级单词，更符合记忆习惯。<br />释义准确并配真题例句，冲击170分必备。<br />内含标准美MP3光盘，背单词练听力，一举两得。']
+				['039', '无'],
+				['040', '六级词汇词根+联想记忆法']
+				];
+				
+		var R = [
+				['001', '005', '003'],
+				['002', '005', '003'],
+				['007', '008', '001'],
+				['007', '008', '002'],
+				['011', '006', '010'],
+				['011', '009', '007'],
+				['011', '001', '012'],
+				['011', '002', '013'],
+				['012', '005', '003'],
+				['013', '005', '003'],
+
+				['040', '009', '014'],
+				['014', '008', '015'],
+				['014', '008', '017'],
+				['014', '008', '019'],
+				['014', '008', '021'],
+				['021', '005', '023'],
+				['014', '008', '024'],
+				['014', '008', '026'],
+				['014', '008', '028'],
+				['028', '005', '030'],
+				['014', '008', '031'],
+				['014', '008', '033'],
+				['014', '008', '035'],
+				['014', '008', '037'],
+				['040', '015', '016'],
+				['040', '017', '018'],
+				['040', '019', '020'],
+				['040', '021', '022'],
+				['040', '024', '025'],
+				['040', '026', '027'],
+				['040', '028', '029'],
+				['040', '031', '032'],
+				['040', '033', '034'],
+				['040', '035', '036'],
+				['040', '037', '038']
+				];
+				
+		function name(id)
+		{
+			for(var i=0; i<O.length; i++)
+			{
+				if(O[i][0] == id)
+				{
+					return O[i][1];
+				}
+			}
+		}
+		
+		function key(name)
+		{
+			for(var i=0; i<O.length; i++)
+			{
+				if(O[i][1] == name)
+				{
+					return O[i][0];
+				}
+			}
+		}
+
+		//bool fn(relation)
+		function relation(fn)
+		{
+			var results = [];
+			for(var i=0; i<R.length; i++)
+			{
+				if(fn(R[i]))
+				{
+					results.push(R[i]);
+				}
+			}
+			return results;
+		}
+		
+		function showEntity()
+		{
+			var html = '';
+			for(var i=0; i<O.length; i++)
+			{
+				html += '<tr>';
+				html += '<td>' + O[i][0] + '</td>';
+				html += '<td>' + O[i][1] + '</td>';
+				html += '</tr>';
+			}
+			$('#tbdEntity').empty();
+			$('#tbdEntity').append(html);
+		}
+		
+		function showRelation()
+		{
+			var html = '';
+			
+			for(var i=0; i<R.length; i++)
+			{
+				html += '<tr>';
+				html += '<td>' + '<span class="key">(' + R[i][0] + ')</span>' + name(R[i][0]) + '</td>';
+				html += '<td>' + '<span class="key">(' + R[i][1] + ')</span>' + name(R[i][1]) + '</td>';
+				html += '<td>' + '<span class="key">(' + R[i][2] + ')</span>' + name(R[i][2]) + '</td>';
+				html += '</tr>';
+			}
+			$('#tbdRel').empty();
+			$('#tbdRel').append(html);
+			
+			html = '';
+			for(var i=0; i<O.length; i++)
+			{
+				html += '<option value="' + O[i][0] + '">' + O[i][1] + '</option>';
+			}
+			$('#selSrc,#selRel,#selDst').empty();
+			$('#selSrc,#selRel,#selDst').append(html);
+		}
+		
+		function showClasses(classes)
+		{
+			var idOfClass = '';
+			for(var i=0; i<O.length; i++)
+			{
+				if(O[i][1] == '类')
+				{
+					idOfClass = O[i][0];
+					break;
+				}
+			}
+			
+			var classes = [];
+			
+			if($('#txtClass1')[0].searchEngine)
+			{
+				//$('#txtClass1')[0].searchEngine.resetCache();
+			}
+			else
+			{
+				//$('#txtClass1')[0].searchEngine = new pinyinEngine(); //创建类快速搜索
+			}
+			
+			$('#selClass').empty();
+			//$('#selClass1').empty();
+			for(var i=0; i<R.length; i++)
+			{
+				if(R[i][1] == idOfClass)
+				{
+					var j;
+					for(j=0; (j<classes.length) && (classes[j] != R[i][2]); j++)
+					{
+						null;
+					}
+					if(j >= classes.length)
+					{
+						classes.push(R[i][2]);
+						
+						for(var k=0; k<O.length; k++)
+						{
+							if(O[k][0] == R[i][2])
+							{
+								$('#selClass').append('<option value="' + O[k][0] + '">' + O[k][1] + '(' + O[k][0] + ')' + '</option>');
+								//$('#selClass1').append('<option value="' + O[k][0] + '">' + O[k][1] + '(' + O[k][0] + ')' + '</option>');
+								//$('#txtClass1')[0].searchEngine.setCache([O[k][1],O[k][0]], O[k]);
+								break;
+							}
+						}	
+					}
+				}
+			}//end for
+		}
+		
+		showClasses();
+		
+		function showAttrs(classId)
+		{
+			var html = '';
+			var attrId = key('属性');
+			var results = relation(function(r)
+			{
+				return ((r[0] == classId) && (r[1] == attrId));
+			});
+			
+			if(this.search)
+			{
+				this.search.resetCache();
+			}
+			else
+			{
+				this.search = new pinyinEngine();  //创建属性快速搜索
+			}
+			
+			for(var i=0; i<results.length; i++)
+			{
+				html += '<lable>' + name(results[i][2]) + ':</lable>';
+				this.search.setCache([name(results[i][2]), results[i][2]], name(results[i][2]));
+				html += '<input type="text" />';
+				var unit = relation(function(r)
+				{
+					return (r[0] == results[i][2]) && (r[1] == key('单位'));
+				});
+				if(unit.length)
+				{
+					html += name(unit[0][2]);
+				}
+				html += '<br />';
+			}
+			
+			$('#divAttrs').html(html);
+		}
+		$('#selClass').change(function()
+		{
+			showAttrs(this.value);
+		});
+		
+		showEntity();
+		$('#btnAddEntity').click(function()
+		{
+			var id = (parseInt(O[O.length-1][0], 10) + 1).toString();
+			var format = '000';
+			id = format.substr(0, format.length-id.length) + id;
+			O.push([id, $('#txtEntity').val()]);
+			showEntity();
+			showRelation();
+			$('#txtEntity').focus();
+			$('#txtEntity').select();
+			return false;
+		});
+		
+		showRelation();
+		$('#btnAddRel').click(function()
+		{
+			R.push([$('#selSrc').val(), $('#selRel').val(), $('#selDst').val()]);
+			showRelation();
+			$('#selSrc').focus();
+			$('#selSrc').select();
+			return false;
+		});
+		
+		
+		////////////////////////////////
+		function SearchBox(inputBox, selectList/*, [dataSet]*/)
+		{
+			var _dataSet = arguments[2] ? arguments[2] : [];
+			var inputedCbk = function(data){};
+			
+			var _init = function()
+			{
+				//给文本框绑定拼音搜索引擎
+				if(inputBox.searchEngine)
+				{
+					inputBox.searchEngine.resetCache();
+				}
+				else
+				{
+					inputBox.searchEngine = null;
+					inputBox.searchEngine = new pinyinEngine(); //创建类快速搜索
+					
+					//文本框激活时显示候选列表
+					_addEvent(inputBox, 'focus', function()
+					{
+						if(inputBox.focusBy == selectList)
+						{
+							inputBox.focusBy = null; //还原，避免重放
+							//return;
+						}
+						
+						//inputBox.key = null;
+						//inputBox.value = '';
+						inputBox.oldVal = inputBox.value;
+						inputBox.focused = true;
+						selectList.focused = false;
+						_update(_dataSet);
+						
+						//设置inputBox的key&vlaue
+						if(selectList.options.length)
+						{
+							if(inputBox.value == '')
+							{
+								//selectList.selectedIndex = 0; //该死的IE6此属性是只读的！！
+								_selectIndex(selectList, 0);
+							}
+							else
+							{
+								var idx = -1;
+								for(var i=0; i<selectList.options.length; i++)
+								{
+									//查找候选列表中与inputBox当前值（key&value）匹配的选项
+									if((selectList.options[i].value == inputBox.key) && (selectList.options[i].text == inputBox.value))
+									{
+										idx = i;
+										break;
+									}
+									else if(selectList.options[i].text == inputBox.value)
+									{
+										idx = (idx==-1 ? i : idx);
+									}
+								}
+								
+								if(idx != -1)
+								{
+									_selectIndex(selectList, idx);
+									inputBox.key = selectList.options[idx].value;
+									inputBox.value = selectList.options[idx].text;
+								}
+							}
+						} //end if
+						selectList.style.display = '';
+/*var o = document.createElement('option');
+$(selectList).append(o);
+o.value = '-1';
+o.text = '请选择';
+window.dbgn=window.dbgn==undefined?1:(window.dbgn+1);
+$('#txtDgb')[0].value +='\n'+window.dbgn+'. $(selectList).html():\n'+$(selectList).html();
+*/
+					});
+					
+					_addEvent(selectList, 'focus', function()
+					{
+						inputBox.focused = false;
+						selectList.focused = true;
+					});
+					_addEvent(selectList, 'click', function()
+					{
+//document.title = selectList.value;
+						window.setTimeout(function() //延时，click事件中不能取到下拉列表的当前值
+						{
+							//将候选列表中的当前值赋给文本框
+							inputBox.value = name(selectList.value);//# ## ## ## ## ## ## ##
+							inputBox.key = selectList.value;
+							//selectList.focused = false;
+							//selectList.style.display = 'none';
+							inputBox.focusBy = selectList;
+							inputBox.focus();
+							
+							//执行输入完成回调函数
+							inputedCbk.call(inputBox, {key:inputBox.key, name:inputBox.value});
+						}, 1);
+//document.title = 389;
+//document.title = 390;
+					});
+					_addEvent(selectList, 'blur', function()
+					{
+						if(!inputBox.focused)
+						{
+							selectList.style.display = 'none';
+						}
+						selectList.focused = false;
+					});
+					
+					//默认隐藏候选列表
+					selectList.style.display = 'none';
+					_addEvent(inputBox, 'blur', function()
+					{
+//document.title = ' ,input blur';
+						window.setTimeout(function()
+						{
+//document.title += ' ,selectList.focused='+selectList.focused;
+							if(!selectList.focused)
+							{
+								selectList.style.display = 'none';
+							}
+							inputBox.focused = false;
+							selectList.focused = false; //只要进入了些事件进行判断后，一次性的selectList.isFocus就无用了，置为false即可。
+						}, 100); //100毫秒后再隐藏，否则IE6中虽然执行了display='none'，但并没有被隐藏掉
+					});
+				
+					//给文本框绑定onkeydown事件，注：对于文本框，onkeydown事件完成后才能取到其新的值，这往往用setTimeout方式实现。
+					_addEvent(inputBox, 'keydown', function(e)
+					{
+						e = e || window.event;
+						
+						switch(e.keyCode)
+						{
+							case 13: //ENTER, set the value of input
+								var v = selectList.value;
+								inputBox.value = name(v);//# ## ## ## ## ## ## ##
+								inputBox.key = v;
+								_update(_dataSet);
+								window.setTimeout(function()
+								{
+									selectList.value = v;
+								}, 1);
+								
+								// 阻止回车默认事件
+								if(e.preventDefault)
+								{
+									e.preventDefault();
+								}
+								e.returnValue = false;
+								
+								//执行输入完成回调函数
+								inputedCbk.call(inputBox, {key:inputBox.key, name:inputBox.value});
+								break;
+							case 38:
+							case 37: //向上键 或 向右键，选择上一个
+								var len = selectList.options.length;
+								if(len)
+								{
+									var i = selectList.selectedIndex;
+									_selectIndex(selectList, ((i==-1) || (i==0)) ? len-1 : i-1);
+									//selectList.options[((i==-1) || (i==0)) ? len-1 : i-1].setAttribute('selected', 'true');
+								}
+								break;
+							case 40:
+							case 39: //向下键 或 向右键，选择一下个
+								var len = selectList.options.length;
+								if(len)
+								{
+									var i = selectList.selectedIndex;
+									_selectIndex(selectList, ((i==-1) || (i>=len-1)) ? 0 : i+1);
+									//selectList.options[((i==-1) || (i>=len-1)) ? 0 : i+1].setAttribute('selected', 'true');
+								}
+								break;
+							default: //普通字符
+								if(inputBox.searchTimer)
+								{
+									window.clearTimeout(inputBox.searchTimer);
+								}
+
+								//setTimeout在此有两个作用：1.减小搜索频率，2: 解决onkeydown未完成前不能取到文本框最新值的问题
+								inputBox.searchTimer = window.setTimeout(function()
+								{
+									if (inputBox.value !== inputBox.oldVal)
+									{
+										if(inputBox.value === '') //如果为空就显示所有选项
+										{
+											_update(_dataSet);
+											if(selectList.options.length)
+											{
+												_selectIndex(selectList, 0);
+											}
+										}
+										else //否则显示满足搜索条件的选项
+										{
+											var dataSet = [];
+											inputBox.searchEngine.search(inputBox.value, function(data)
+											{
+												dataSet.push(data);
+											});
+											_update(dataSet);
+				
+											if(selectList.options.length)
+											{
+												_selectIndex(selectList, 0);
+											}
+										} //end if
+										
+										inputBox.oldVal = inputBox.value;
+									} //end if
+								}, 40);
+								
+								break;
+						} //end switch
+					}); //end keydown
+				} //end if
+				
+				//显示数据，更新搜索缓存
+				_update(_dataSet, true);
+			}; //end init();
+			
+			//根一批数据显示候选列表，更新搜索缓存（setCatch=true）
+			var _update = function(dataSet/*, [setCatch]*/)
+			{
+				var setCatch = arguments[1]==true ? true : false;
+				
+				//清空候选列表
+				while(selectList.firstChild)
+				{
+					selectList.removeChild(selectList.firstChild );
+				}
+				
+				//更新数据源
+				if(setCatch)
+				{
+					_dataSet = dataSet;
+					inputBox.searchEngine.resetCache();
+				}
+				
+				for(var i=0; i<dataSet.length; i++)
+				{
+					//在文本框搜索缓存中加入数据
+					if(setCatch)
+					{
+						inputBox.searchEngine.setCache([dataSet[i]['name'],dataSet[i]['key']], {key:dataSet[i]['key'], name:dataSet[i]['name']});
+					}
+					
+					//在候选列表中显示数据
+					var o = document.createElement('option');
+					selectList.appendChild(o);
+					o.value = dataSet[i]['key'];
+					o.text = dataSet[i]['name'];
+				}
+				selectList.size = dataSet.length>=10 ? 10 : dataSet.length;
+			} //end _update
+			
+			
+			var _addEvent = function(obj, type, fn)
+			{
+				if(obj.attachEvent) //IE
+				{
+					obj['e'+type+fn] = fn;
+					obj[type+fn] = function()
+					{
+						obj['e'+type+fn](window.event);
+					}
+					obj.attachEvent('on'+type, obj[type+fn]);
+				}
+				else
+				{
+					obj.addEventListener(type, fn, false);
+				}
+			};
+			
+			var _selectIndex = function(sel, idx)
+			{
+				try
+				{
+					sel.selectedIndex = idx;
+				}
+				catch(e)
+				{
+					sel.value = null;
+					sel.options[idx].setAttribute('selected', 'true');
+				}
+			};
+			
+			// ===APIs===
+			//输入完成（输入框中敲回车或在候选列表上点击选项）回调函数。
+			//回调函数原形：function cbk(value)，参数value: SearchBox的当前值。
+			this.inputed = function(cbk)
+			{
+				inputedCbk = cbk;
+			};
+			
+			this.update = function(dataSet/*, [setCatch]*/)
+			{
+				var setCatch = arguments[1]==true ? true : false;
+				
+				if(setCatch)
+				{
+					this.dataSet = dataSet; //更新数据源
+				}
+				_update.apply(this, arguments);
+			};
+			
+			// ===Init====
+			this.dataSet = _dataSet;
+			this.box = inputBox;
+			this.box.searchBox = this;
+			this.list = selectList;
+			this.inputedCbk = function(){return inputedCbk};
+			_init();
+		} //end SearchBox()
+		
+		function SearchBoxGroup(/*[SearchBox1, SearchBox2, ..., SearchBoxN], *[{key:xxx, v:yyy}, {key:xxx, v:yyy}]*/)
+		{
+			var _arg1 = [];
+			var _arg2 = [];
+			
+			this.boxes = []; //SearchBoxArray
+			this.dataList = {searchBox:[], data:[]}; //保存搜索框对像和候选列表的对应关系
+			
+			var _construct = function()
+			{
+				if(arguments.length >=2)
+				{
+					_arg1 = arguments[0];
+					_arg2 = arguments[1];
+				}
+				else if(arguments.length >=1)
+				{
+					if(args[0][0] instanceof SearchBox)
+					{
+						_arg1 = arguments[0];
+					}
+					else
+					{
+						_arg2 = arguments[0];
+					}
+				}
+				else
+				{
+					return;
+				}
+				
+				this.boxes = [];
+				for(var i=0; i<_arg1.length; i++)
+				{
+					this.boxes.push(_arg1[i]);
+				}
+				
+				this.dataList = [];
+				this.dataList.data = _arg2.slice(0); //拷贝
+				for(var i=0; i<_arg2.length; i++)
+				{
+					this.dataList.searchBox[i] = null;
+				}
+			};
+			
+			SearchBoxGroup.prototype.add = function(/*[SearchBox1, SearchBox2, ..., SearchBoxN]*/)
+			{
+				for(var i=0; i<arguments.length; i++)
+				{
+					if(!this.boxes.has(arguments[i]))
+					{
+						this.boxes.push(arguments[i]);
+					}
+				}
+			};
+			
+			SearchBoxGroup.prototype.del = function(/*[SearchBox1, SearchBox2, ..., SearchBoxN]*/)
+			{
+				for(var i=0; i<arguments.length; i++)
+				{
+					if(!this.boxes.has(arguments[i]))
+					{
+						this.boxes.pop(arguments[i]);
+					}
+				}
+			};
+			
+			//更新用于所有搜索框组件的候选列表
+			SearchBoxGroup.prototype.update = function(key, searchBox)
+			{
+				if(!key)
+				{
+					return;
+				}
+				
+				for(var i=0,length=this.dataList.data.length; i<length; i++)
+				{
+					if(this.dataList.data[i].key == key)
+					{
+						this.dataList.searchBox[i] = searchBox?searchBox:null;
+						break;
+					}
+				}
+
+				for(var i=0, length=this.boxes.length; i<length; i++)
+				{
+					var list = [];
+					for(var j=0, jLength=this.dataList.data.length; j<jLength; j++)
+					{
+						//如果未使用或当前搜索框组件正在使用，则添加到修改列表中
+						if((this.dataList.searchBox[j] == null) || (this.dataList.searchBox[j] == this.boxes[i]))
+						{
+							list.push(this.dataList.data[j]);
+						}
+					}
+					this.boxes[i].update(list, true);
+				}
+			};
+			
+			_construct.apply(this, arguments);
+		}
+
+		Array.prototype.has = function(e)
+		{
+			if(this.indexOf)
+			{
+				return this.indexOf(e)==-1 ? false : true;
+			}
+		
+			for(var i=0, len=this.length; i<len; i++ )
+			{
+				if(this[i] === e)
+				{
+					return true;
+				}
+			}
+		
+			return false;
+		}
+			
+		function getEntity()
+		{
+			var ret = [];
+			for(var i=0; i<O.length; i++)
+			{
+				ret.push({key:O[i][0], name:O[i][1]});
+			}
+			return ret;
+		} //end getEntity()
+		
+		//entity: {key, name}
+		function findEntity(entity)
+		{
+			for(var i=0; i<O.length; i++)
+			{
+				//查找候选列表中与inputBox当前值（key&value）匹配的选项
+				//if((O[i][0] == entity['key']) && (O[i][1] == entity['name']))
+				if(O[i][1] == entity['name'])
+				{
+					return {key:O[i][0], name:O[i][1]};
+				}
+			}
+			
+			return null;
+		}
+		
+		//entity: {key, name}
+		function addEntity(entity)
+		{
+			var id = (parseInt(O[O.length-1][0], 10) + 1).toString();
+			var format = '000';
+			id = format.substr(0, format.length-id.length) + id;
+			O.push([id, entity.name]);
+			
+			return {key:id, name:entity.name};
+		}
+		
+		function addRelation(src, rel, tar)
+		{
+			for(var i=0; i<R.length; i++)
+			{
+				if(R[i].toString() == [src, rel, tar].toString())
+				{
+					return R[i];
+				}
+			}
+			
+			R.push([src, rel, tar]);
+			return [src, rel, tar];
+		}
+		
+		function getClass()
+		{
+			var classes = [];
+			var ret = [];
+			
+			for(var i=0; i<R.length; i++)
+			{
+				if(R[i][1] == CLASS_KEY)
+				{
+					if(!classes.has(R[i][2]))
+					{
+						classes.push(R[i][2]);
+						ret.push({key:R[i][2], name:name(R[i][2])});
+						
+						if(!classes.has(R[i][0]))
+						{
+							classes.push(R[i][0]);
+							ret.push({key:R[i][0], name:name(R[i][0])});
+						}
+					}
+				}
+			}//end for
+			
+			return ret;
+		} //end getClass()
+		
+		function getAttr(classKey)
+		{
+			var attrKey = ATTR_KEY;
+			var objs = [];
+			var attrs = [];
+			var ret = [];
+			for(var i=0; i<R.length; i++)
+			{
+				if(!objs.has(R[i][0]))
+				{
+					objs.push(R[i][0]);
+				}
+			}
+			for(var i=0; i<R.length; i++)
+			{
+				if(objs.has(R[i][0]) && !attrs.has(R[i][1]) && (R[i][1] != CLASS_KEY))
+				{
+					attrs.push(R[i][1]);
+					ret.push({key:R[i][1], name:name(R[i][1])});
+				}
+			}
+
+			return ret;
+		} //end getAttr()
+		
+		function parentClass(key)
+		{
+			var classes = [];
+			var ret = [];
+
+			for(var i=0; i<R.length; i++)
+			{
+				if((R[i][1] == CLASS_KEY) && (R[i][0] == key) && !classes.has(R[i][2]))
+				{
+					classes.push(R[i][2]);
+					ret.push({key:R[i][2], name:name(R[i][2])});
+				}
+			}
+
+			return ret;
+		}
+		
+		function childClass(key)
+		{
+			var classes = [];
+			var ret = [];
+
+			for(var i=0; i<R.length; i++)
+			{
+				if((R[i][1] == CLASS_KEY) && (R[i][2] == key) && !classes.has(R[i][0]))
+				{
+					classes.push(R[i][0]);
+					ret.push({key:R[i][0], name:name(R[i][0])});
+				}
+			}
+
+			return ret;
+		}
+		
+		CLASS_KEY = key('类');
+		ATTR_KEY = key('属性');
+		
+		$('#selClass1').width($('#txtClass1').width()+5);
+		$('#selClass1').offset({top:$('#txtClass1').offset().top+$('#txtClass1').height()+5, left:$('#txtClass1').offset().left});
+		$('#selAttr1').width($('#txtAttr1').width()+5);
+		$('#selAttr1').offset({top:$('#txtAttr1').offset().top+$('#txtAttr1').height()+5, left:$('#txtAttr1').offset().left});
+		$('#selVal1').width($('#txtVal1').width()+5);
+		$('#selVal1').offset({top:$('#txtVal1').offset().top+$('#txtVal1').height()+5, left:$('#txtVal1').offset().left});
+		
+		var classBox = new SearchBox($('#txtClass1')[0], $('#selClass1')[0], getClass());
+		var attrBox = new SearchBox($('#txtAttr1')[0], $('#selAttr1')[0]);
+		var valBox = new SearchBox($('#txtVal1')[0], $('#selVal1')[0]);
+		var searchGroup = new SearchBoxGroup();
+		var MULTI_ATTR = true; //是否允许有重复属性
+
+		classBox.inputed(function(data)
+		{
+			var $inputs = $('.attrValGroup:eq(0) .searchBox');
+			var attrBox = $inputs[0].searchBox;
+			
+			//初始化第一组属性
+			$inputs.each(function(i)
+			{
+				this.key = '';
+				this.value = '';
+			});
+			//去掉多余属性
+			$('.attrValGroup:not(:eq(0))').remove();
+			
+			$('.searchDel').hide().click(function()
+			{
+				var $group = $(this).parents('.attrValGroup');
+				var key = $('.searchBox', $group)[0].key;
+				
+				$group.remove();
+				if($('.attrValGroup').length <= 1)
+				{
+					$('.searchDel').hide();
+				}
+				
+				if(!MULTI_ATTR)
+				{
+					searchGroup.update(key, null);
+				}
+			});
+			
+			if(!MULTI_ATTR)
+			{
+				searchGroup.dataList.data = getAttr(data['key']).slice(0);
+				searchGroup.add(attrBox);
+				searchGroup.update(data.key, attrBox);
+				return;
+			}
+			
+			attrBox.update(getAttr(data['key']), true);
+		});
+		
+		attrBox.inputed(function(data)
+		{
+			var $group =  $(this).parent('.attrValGroup');
+			var $searchBox1 = $('.searchBox', $group);
+			var $searchList1 = $('.searchList', $group);
+			$searchBox1[1].searchBox.update(getEntity(), true);
+			searchGroup.update($searchBox1[0].searchBox.box.key, $searchBox1[0].searchBox);
+		});
+
+		$('.attrValGroup .searchBox:eq(0)').focus(function()
+		{
+			var $group =  $(this).parent('.attrValGroup');
+			var $searchBox1 = $('.searchBox', $group);
+			var $searchList1 = $('.searchList', $group);
+
+			$searchBox1[1].searchBox.update(getEntity(), true);//更新值的候选列表
+			
+			//如果是最后一组，则在后面增加一组属性框，供用户添加更多的属性
+			var $groups = $('.attrValGroup');
+			if($(this).parent('.attrValGroup')[0] == $groups[$groups.length-1])
+			{
+				var inputedCbk = $searchBox1[0].searchBox.inputedCbk(); //arguments.callee;
+				var $g1 = $(this).parent('.attrValGroup');
+				var $g2 = $g1.clone();
+				$g1.after($g2);
+				
+				var $searchBox2 = $('.searchBox', $g2);
+				var $searchList2 = $('.searchList', $g2);
+				
+				$searchList2.each(function(i)
+				{
+					$searchBox2.eq(i).val('').css('background-color', '#FFF');;
+					$searchList2.eq(i).css({'display':''}); //需要先显示，否则其位置不能被修改
+					$(this).offset(
+					{
+						top: $searchBox2.eq(i).offset().top+$searchBox2.eq(i).height()+5, 
+						left: $searchBox2.eq(i).offset().left
+					});
+					$searchList2.eq(i).css({'display':'none'});
+					
+					switch(i)
+					{
+						case 0:
+							if(!MULTI_ATTR)
+							{
+								var newAattrBox = new SearchBox($searchBox2[0], $searchList2[0], $searchBox1[0].searchBox.dataSet); //构建搜索框
+								newAattrBox.inputed(inputedCbk);
+								searchGroup.add(newAattrBox);
+								/*
+								在当前搜索框inputed事件中会更新所有搜索框的候选列表
+								searchGroup.update($searchBox1[0].searchBox.box.key, $searchBox1[0].searchBox.box);
+								*/
+								break;
+							}
+							
+							var newAattrBox = new SearchBox($searchBox2[0], $searchList2[0],  $searchBox1[0].searchBox.dataSet); //构建搜索框
+							newAattrBox.inputed(inputedCbk);
+							break;
+						case 1:
+							var newValBox = new SearchBox($searchBox2[1], $searchList2[1], getEntity()); //构建搜索框
+							break;
+						default:
+							//no action
+							break;
+					}
+				}); //end each()
+				
+				$($searchBox2[0]).focus(arguments.callee);
+				if($('.attrValGroup').length >=2)
+				{
+					$('.searchDel').show();
+					$('.searchDel', $g2).click(function()
+					{
+						$(this).parents('.attrValGroup').remove();
+						if($('.attrValGroup').length <= 1)
+						{
+							$('.searchDel').hide();
+						}
+						
+						if(!MULTI_ATTR)
+						{
+							searchGroup.update($('.searchBox',$g2)[0].key, null);
+						}
+					});
+				}
+				else
+				{
+					$('.searchDel').hide();
+				}
+			} //end if
+		}); //end attrBox.inputed
+		
+		$('#btnAddClass').bind('click', function()
+		{
+			var tmp;
+			var obj;
+			var xClass;
+			var attr;
+			var val;
+			
+			tmp = findEntity({key:$('#txtObjName1')[0].key, name:$('#txtObjName1')[0].value});
+			obj = tmp ? tmp.key : addEntity({key:$('#txtObjName1')[0].key, name:$('#txtObjName1')[0].value}).key;
+			
+			tmp = findEntity({key:$('#txtClass1')[0].key, name:$('#txtClass1')[0].value});
+			xClass = tmp ? tmp.key : addEntity({key:$('#txtClass1')[0].key, name:$('#txtClass1')[0].value}).key;
+
+			addRelation(obj, CLASS_KEY, xClass);
+			
+			var $g = $('.attrValGroup');
+			var $inputs = [];
+			for(var i=0, length = $g.length; i<length; i++)
+			{
+				$inputs = $('.searchBox', $g[i]);
+				
+				if(!$inputs[0].value)
+				{
+					continue;
+				}
+				
+				tmp = findEntity({key:$inputs[0].key, name:$inputs[0].value});
+				attr = tmp ? tmp.key : addEntity({key:$inputs[0].key, name:$inputs[0].value}).key;
+				
+				tmp = findEntity({key:$inputs[1].key, name:$inputs[1].value});
+				val = tmp ? tmp.key : addEntity({key:$inputs[1].key, name:$inputs[1].value}).key;
+				
+				addRelation(obj, attr, val);
+			}
+			
+			showEntity();
+			showRelation();
+			classBox.update(getClass(), true);
+		
+			$('#txtObjName1').val('');
+			var txtClass = $('#txtClass1')[0];
+			(txtClass.searchBox.inputedCbk())({key:key(txtClass.value), name:txtClass.value}); //还原属性组
+			var html = showTreeTable();
+			$('#spanTree').html(html); //刷新树状表
+			return false;
+		}); //end btnAddClass click
+		
+		$('#chkMultiAttr').bind('click', function()
+		{
+			MULTI_ATTR = this.checked;
+			var txtClass = $('#txtClass1')[0];
+			(txtClass.searchBox.inputedCbk())({key:key(txtClass.value), name:txtClass.value}); //还原属性组
+		});
+		
+		function treeFind(T, fn/*(level, node, userData)*/, userData, level) //广度优先遍历
+		{
+			var nodes = level ? T : (T[MultiClass.field.CHILD] || []);
+			var childNodes = [];
+			var children = [];
+			var childFlag = false;
+			var ret = [];
+			
+			level = level?level+1:1
+			for(var i=0; i<nodes.length; i++)
+			{
+				//处理nodes
+				if(fn(level, nodes[i], userData))
+				{
+					ret.push(nodes[i]);
+				}
+				
+				childNodes = nodes[i][MultiClass.field.CHILD];
+				if(childNodes) //直到所有结点都没有子结点才停止遍历
+				{
+					childFlag = true;
+					
+					for(var j=0; j<childNodes.length; j++)
+					{
+						children.push(childNodes[j]);
+					}
+				}
+				else
+				{
+					children.push(nodes[i]); //如果不存在子结点，则用父结点作子结点
+				}
+			}
+			
+			if(childFlag)
+			{
+				return ret.concat(arguments.callee(children, fn, userData, level));
+			}
+			
+			return ret;
+		} //end treeFind()
+		
+		//data:[body, child]} --------------------------------------------------->需要优化...
+		function treeAdd(T, data)
+		{
+			var node;
+			
+			var parentClaesses = parentClass(data.key);
+			if(parentClaesses.length)
+			{
+				var parent = treeFind(T, function(level, node, parentClaess)
+				{
+					return parentClaess.key && (node[MultiClass.field['BODY']].key == parentClaess.key);
+				}, parentClaesses[0]);
+				
+				if(parent[0])
+				{
+					node = [data, null, parent[0]];
+					if(parent[0][MultiClass.field.CHILD])
+					{
+						parent[0][MultiClass.field.CHILD].push(node);
+					}
+					else
+					{
+						parent[0][MultiClass.field.CHILD] = [node];
+					}
+					
+					return node;
+				}
+			}
+			
+			var childClasses = childClass(data.key);
+			if(childClasses.length)
+			{
+				var children = treeFind(T, function(level, node, childClasses)
+				{
+					for(var i=0; i<childClasses.length; i++)
+					{
+						if(childClasses[0].key && (childClasses[0].key == node[MultiClass.field.BODY].key))
+						return true;
+					}
+				}, childClasses);
+				
+				if(children.length)
+				{
+					node = [data, null, children[0][MultiClass.field.PARENT] || null];
+					node[MultiClass.field.CHILD] = children.slice(0);
+					for(var i=0; i<children.length; i++)
+					{
+						if(children[i][MultiClass.field.PARENT])//--------------------------------NOW...............
+						{
+							children[i][MultiClass.field.PARENT][MultiClass.field.CHILD].splice(children[i], node); //替换
+						}
+					}
+					
+					return node;
+				}
+			}
+
+			node = [data, null, null]
+			
+			if(T[MultiClass.field.CHILD])
+			{
+				T[MultiClass.field.CHILD].push(node);
+			}
+			else
+			{
+				T[MultiClass.field.CHILD] = [node];
+			}
+			
+			return node;
+		}
+
+		function showTreeTable()
+		{
+			//将ordf数据存入树MultiClass中
+			var field = MultiClass.field;
+			MultiClass = [];
+			MultiClass.field = field;
+			
+			var classes = getClass();
+			var attrs = [];
+			var node = {}; //{key:xxx, name:xxx, attr:[xxx]}
+			for(var i=0, length=classes.length; i<length; i++)
+			{
+				attrs = getAttr(classes[i].key);
+				classes[i]['attr'] = attrs;
+				treeAdd(MultiClass, classes[i]);
+			}
+			
+			//根据树数所生成树状表格
+			var tr = (function traverse(nodes, level) //深度优先遍历
+			{
+				var nodes = level ? nodes : (nodes[MultiClass.field.CHILD] || []);
+				var childNodes = [];
+				var children = [];
+				var childFlag = false;
+				var bgColor = '';
+				var html = '';
+				
+				level = level?level+1:1
+				for(var i=0; i<nodes.length; i++)
+				{
+					bgColor = Math.round(Math.random()*0x1000000).toString(16);
+					childNodes = nodes[i][MultiClass.field.CHILD];
+					if(childNodes)
+					{
+						childFlag = true;
+						
+						for(j=0; j<childNodes.length; j++)
+						{
+							childNodes[j].bgColor = bgColor;
+							children.push(childNodes[j]);
+						}
+					}
+					else
+					{
+						nodes[i].bgColor = bgColor;
+						children.push(nodes[i]);
+					}
+				}
+				
+				if(childFlag)
+				{
+					html = arguments.callee(children, level);
+				}
+				
+				for(var i=0; i<nodes.length; i++)
+				{
+					nodes[i].col = 0;
+					if(nodes[i][MultiClass.field.CHILD])
+					{
+						for(var j=0; j<nodes[i][MultiClass.field.CHILD].length; j++)
+						{
+							nodes[i].col += nodes[i][MultiClass.field.CHILD][j].col;
+						}
+					}
+					else
+					{
+						nodes[i].col = 1;
+					}
+				}
+			
+				var tr = '';
+				tr += '\n<tr>';
+				/*
+				层级名
+				tr += '\n<td style="word-wrap:break-word;" class="levelTitle">' + Level[level-1] + '</td>';
+				*/
+				tr += '\n<td style="word-wrap:break-word;" class="levelTitle">第' + (level) + '级分类</td>';
+				for(i=0; i<nodes.length; i++)
+				{
+					/*
+					彩色
+					tr += '\n<td colspan="' + nodes[i].col + '" style="background-color:#' + nodes[i].bgColor + '">' + nodes[i][_field.BODY]['name'] + '</td>';
+					*/
+					/*无色*/
+					tr += '\n<td colspan="' + nodes[i].col + '">' + nodes[i][MultiClass.field.BODY]['name'] + '</td>';
+				}
+				tr += '\n</tr>';
+				
+				return (tr + html);
+			})(MultiClass); //end traverse()
+			
+			var html = '';
+			html += '\n<table>';
+			html += tr;
+			html += '\n</table>';
+			
+			return html;
+		} //end showTreeTable
+		
+		$('#spanTree').html(showTreeTable());
+	}); //end load
+	
+	</script>
+</head>
+<body>
+	<form id="formObjBuilder">
+    <fieldset>
+    <lengend><strong>对象构建器</strong></lengend>
+    <p>
+    <label>名称</label>
+    <input type="text" id="txtObjName1" />
+    </p>
+    
+    <p>
+    <label>类别</label>
+    <input type="text" id="txtClass1" AUTOCOMPLETE="OFF" />
+    <select id="selClass1" class="searchList" multiple="multiple" tabindex="999">
+    </select>
+	&nbsp;
+	<input type="checkbox" id="chkMultiAttr" name="multAttr" checked="checked" />允许重复属性
+    <p>
+    
+    <p class="attrValGroup">
+    <label>属性</label> <!--之前此处的关闭标签忘记斜杠了，导致点击候选列表或后面的搜索框后，焦点总是跑到这里的文本框上并处于选中状态！！-->
+    <input type="text" id="txtAttr1" class="searchBox" AUTOCOMPLETE="OFF" />
+    <select id="selAttr1" class="searchList" multiple="multiple" tabindex="1000">
+	<option>1</option>
+    </select>
+    
+    &nbsp;=&nbsp;
+    <lable>值</label>
+    <input type="text" id="txtVal1" class="searchBox" AUTOCOMPLETE="OFF" />
+    <select id="selVal1" class="searchList" multiple="multiple" tabindex="1001">
+    </select>
+	&nbsp;<a href="#" class="searchDel" tabindex="-1" title="删除" style="display:none;">x</a>
+    </p>
+    
+    <input type="submit" id="btnAddClass" value="添加" />
+    
+    </fieldset>
+	</form>
+	
+	<fieldset>
+		<legend>分类树</legend>
+		<span id="spanTree">
+		</span>
+	</fieldset>
+	
+	<fieldset style="display:none;">
+	<legend>DEBUG Message</legend>
+	<textarea id="txtDgb" style="width:75em;height:80em" onDblClick="javascript:this.value='';"></textarea>
+	</fieldset>
+	
+	<form id="formObj">
+    <fieldset>
+    <legend><strong>添加新实体</strong></legend>
+	<table>
+		<thead><tr><th>标号</th><th>名称</th></tr></thead>
+		<tbody id="tbdEntity">
+        </tbody>
+    </table>
+    实体名<input type="text" id="txtEntity" />
+    <input type="submit" id="btnAddEntity" value="添加" />
+    <span id="spanMsg"></span>
+    </fieldset>
+    
+    <fieldset class="relationBox">
+    <legend><strong>添加关系</strong></legend>
+	<table id="tabRel">
+		<thead><tr><th>源对象</th><th>关系键</th><th>目标对象</th></thead>
+		<tbody id="tbdRel">
+        </tbody>
+    </table>
+    <span>
+    <h4>源实体</h4>
+    <select id="selSrc"></select>
+    </span>
+    
+    <span>
+    <h4>关系键</h4>
+    <select id="selRel"></select>
+    </span>
+    
+    <span>
+    <h4>宿实体</h4>
+    <select id="selDst"></select>
+    </span>
+    <div>
+    <input type="submit" id="btnAddRel" value="添加" />
+    </div>
+    </fieldset>
+    
+    <fieldset>
+	<legend><strong>添加新类</strong></legend><br />
+	名称<input type="text" id="txtObjName" /><br />
+	类别
+    <select id="selClass" style="width:8em;">
+    <option value="0">请选择</option>
+    </select><br />
+	描述<div id="divAttrs"></div>
+	
+	<input type="submit" value="添加" />
+    </fieldset>
+	</form>
+</body>
+</html>

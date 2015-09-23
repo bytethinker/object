@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0022)http://www.htinns.com/ -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="./index_files/_base.css">
+    <link rel="stylesheet" type="text/css" href="./index_files/_ht2009.css">
+	<script src="./index_files/jquery-last.js"></script>
+	<script src="./index_files/CityListForJs.ashx"></script>
+	<script src="./index_files/functions.js"></script>
+	<script src="./index_files/ht_city.js"></script>
+</head>
+<body>
+    <form name="form1" method="post" action="http://www.htinns.com/Default.aspx" id="form1">
+    <div>
+            <div id="panel_search">
+                <div id="panel_searchfore">
+
+                    <div class="body">
+                        <table id="tbbody" border="0" cellpadding="0" cellspacing="0">
+                            <tbody><tr>
+                                <td class="c2">
+                                    城市名称：
+                                </td>
+                                <td class="c3">
+								<div style="width:30px; height:100px; background-color:#6666FF;" onclick="javascript:$(this).hide();"></div>
+                                    <div style="position: relative; z-index: 1000;">
+									<!--还不能二次选择！！！！！！-->
+                                        <input type="hidden" id="hdcitycode" value="5101">
+										<input hint="0" class="textinput shiftcolor" id="cityname" type="text" value="上海" default="&lt;中文或拼音&gt;" style="width: 130px; color: rgb(204, 204, 204); " hintcolor="#CCCCCC" color="#494949">
+                                        <div id="form_cities" style="left: 0px; top: 22px; z-index: 9999; display: none; ">
+                                            <div id="top_cities">输入中文/拼音或↑↓选择.</div>
+                                            <div id="panel_cities">
+											<div class="citylineover" id="citem_0" cturn="0" style="background-color: rgb(200, 227, 252); "><span class="lalign">上海</span><span class="ralign">Shanghai</span></div>
+<div class="cityline" id="citem_1" cturn="1"><span class="lalign">北京</span><span class="ralign">Beijing</span></div>
+<div class="cityline" id="citem_2" cturn="2"><span class="lalign">杭州</span><span class="ralign">Hangzhou</span></div>
+<div class="cityline" id="citem_3" cturn="3"><span class="lalign">南京</span><span class="ralign">Nanjing</span></div>
+<div class="cityline" id="citem_4" cturn="4"><span class="lalign">西安</span><span class="ralign">Xian</span></div>
+<div class="cityline" id="citem_5" cturn="5"><span class="lalign">苏州</span><span class="ralign">Suzhou</span></div>
+<div class="cityline" id="citem_6" cturn="6"><span class="lalign">天津</span><span class="ralign">Tianjin</span></div>
+<div class="cityline" id="citem_7" cturn="7"><span class="lalign">沈阳</span><span class="ralign">Shenyang</span></div>
+</div>
+                                            <div id="flip_cities" style="display: block; ">«上一页&nbsp;&nbsp;&nbsp;&nbsp;1/16&nbsp;&nbsp;&nbsp;&nbsp;<a href="" class="cityflip" onclick="city_showlist(1);return false;">下一页»</a></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="c1">
+                                    *
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="c2">
+                                    酒店名称：
+                                </td>
+                                <td class="c3">
+                                    <input id="htname" hint="0" class="textinput shiftcolor" type="text" style="color: rgb(73, 73, 73); " hintcolor="#CCCCCC" color="#494949">
+                                </td>
+                                <td class="c1">&nbsp;
+                                    
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </div>
+                    
+                    <div class="clear">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+
+
+
+
+
+
+
+    </form>
+
+
+</body></html>

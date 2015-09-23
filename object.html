@@ -1,0 +1,627 @@
+<html>
+<head>
+	<title>元对象数据模型管理测试</title>
+    <style type="text/css">
+		legend
+		{
+			font-weight:bold;
+		}
+		
+		th
+		{
+			text-align:left;
+		}
+		
+		.relationBox span
+		{
+			width:15%;
+		}
+		.key
+		{
+			color:#999;
+		}
+		
+		#tbdEntity
+		{
+			word-break:break;
+		}
+	</style>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/pinyinEngine.js"></script>
+	<script type="text/javascript">
+	$(window).bind('load', function()
+	{
+		var _input = $('#txtAttr1')[0];
+		var _list = $('#selAttr1')[0];
+		
+		
+		$('input[type="text"]').focus(function()
+		{
+			$(this).css('background-color', '#FFA');
+			$(this).select();
+		});
+		
+		$('input[type="text"]').blur(function()
+		{
+			$(this).css('background-color', '#FFF');
+		});
+		
+		var O = [
+				['001', '长'],
+				['002', '宽'],
+				['003', '米'],
+				['005', '单位'],
+				['006', '名称'],
+				['007', '电脑桌'],
+				['008', '属性'],
+				['009', '类'],
+				['010', '王某人的电脑桌'],
+				['011', '#实体1'],
+				['012', '2.17'],
+				['013', '0.4'],
+				['014', '书'],
+				['015', '书名'],
+				['016', '六级词汇（词根+联想）记忆法'],
+				['017', '作者'],
+				['018', '俞敏洪'],
+				['019', '出版社'],
+				['020', '世界图书出版社'],
+				['021', '定价'],
+				['022', '25.00'],
+				['023', '元'],
+				['024', '出版日期'],
+				['025', '2006.09.02'],
+				['026', '开本'],
+				['027', '1/32'],
+				['028', '页数'],
+				['029', '318'],
+				['030', '页'],
+				['031', '装帧'],
+				['032', '便携版'],
+				['033', 'ISBN'],
+				['034', '987-7-5062-7336-7/H·759'],
+				['035', '封面图片'],
+				['036', '图片'],
+				['037', '图书简介'],
+				['038', '“词根+联想”实用有趣，……'],//插图风趣，加深记忆；<br />打破传统编排，合理重量级六级单词，更符合记忆习惯。<br />释义准确并配真题例句，冲击170分必备。<br />内含标准美MP3光盘，背单词练听力，一举两得。']
+				['039', '无'],
+				['040', '六级词汇词根+联想记忆法']
+				];
+				
+		var R = [
+				['001', '005', '003'],
+				['002', '005', '003'],
+				['007', '008', '001'],
+				['007', '008', '002'],
+				['011', '006', '010'],
+				['011', '009', '007'],
+				['011', '001', '012'],
+				['011', '002', '013'],
+				['012', '005', '003'],
+				['013', '005', '003'],
+
+				['016', '009', '014'],
+				['014', '008', '015'],
+				['014', '008', '017'],
+				['014', '008', '019'],
+				['014', '008', '021'],
+				['021', '005', '023'],
+				['014', '008', '024'],
+				['014', '008', '026'],
+				['014', '008', '028'],
+				['028', '005', '030'],
+				['014', '008', '031'],
+				['014', '008', '033'],
+				['014', '008', '035'],
+				['014', '008', '037'],
+				['040', '015', '016'],
+				['040', '017', '018'],
+				['040', '019', '020'],
+				['040', '021', '022'],
+				['040', '024', '025'],
+				['040', '026', '027'],
+				['040', '028', '029'],
+				['040', '031', '032'],
+				['040', '033', '034'],
+				['040', '035', '036'],
+				['040', '037', '038']
+				];
+				
+		function name(id)
+		{
+			for(var i=0; i<O.length; i++)
+			{
+				if(O[i][0] == id)
+				{
+					return O[i][1];
+				}
+			}
+		}
+		
+		function id(name)
+		{
+			for(var i=0; i<O.length; i++)
+			{
+				if(O[i][1] == name)
+				{
+					return O[i][0];
+				}
+			}
+		}
+
+		function relation(fun)
+		{
+			var results = [];
+			for(var i=0; i<R.length; i++)
+			{
+				if(fun(R[i]))
+				{
+					results.push(R[i]);
+				}
+			}
+			return results;
+		}
+		
+		function showEntity()
+		{
+			var html = '';
+			for(var i=0; i<O.length; i++)
+			{
+				html += '<tr>';
+				html += '<td>' + O[i][0] + '</td>';
+				html += '<td>' + O[i][1] + '</td>';
+				html += '</tr>';
+			}
+			$('#tbdEntity').empty();
+			$('#tbdEntity').append(html);
+		}
+		
+		function showRelation()
+		{
+			var html = '';
+			
+			for(var i=0; i<R.length; i++)
+			{
+				html += '<tr>';
+				html += '<td>' + '<span class="key">(' + R[i][0] + ')</span>' + name(R[i][0]) + '</td>';
+				html += '<td>' + '<span class="key">(' + R[i][1] + ')</span>' + name(R[i][1]) + '</td>';
+				html += '<td>' + '<span class="key">(' + R[i][2] + ')</span>' + name(R[i][2]) + '</td>';
+				html += '</tr>';
+			}
+			$('#tbdRel').empty();
+			$('#tbdRel').append(html);
+			
+			html = '';
+			for(var i=0; i<O.length; i++)
+			{
+				html += '<option value="' + O[i][0] + '">' + O[i][1] + '</option>';
+			}
+			$('#selSrc,#selRel,#selDst').empty();
+			$('#selSrc,#selRel,#selDst').append(html);
+		}
+		
+		function showClasses(classes)
+		{
+			var idOfClass = '';
+			for(var i=0; i<O.length; i++)
+			{
+				if(O[i][1] == '类')
+				{
+					idOfClass = O[i][0];
+					break;
+				}
+			}
+			
+			var classes = [];
+			
+			if($('#txtClass1')[0].searchEngine)
+			{
+				$('#txtClass1')[0].searchEngine.resetCache();
+			}
+			else
+			{
+				$('#txtClass1')[0].searchEngine = new pinyinEngine(); //创建类快速搜索
+			}
+			
+			$('#selClass').empty();
+			$('#selClass1').empty();
+			for(var i=0; i<R.length; i++)
+			{
+				if(R[i][1] == idOfClass)
+				{
+					var j;
+					for(j=0; (j<classes.length) && (classes[j] != R[i][2]); j++)
+					{
+						null;
+					}
+					if(j >= classes.length)
+					{
+						classes.push(R[i][2]);
+						
+						for(var k=0; k<O.length; k++)
+						{
+							if(O[k][0] == R[i][2])
+							{
+								$('#selClass').append('<option value="' + O[k][0] + '">' + O[k][1] + '(' + O[k][0] + ')' + '</option>');
+								$('#selClass1').append('<option value="' + O[k][0] + '">' + O[k][1] + '(' + O[k][0] + ')' + '</option>');
+								$('#txtClass1')[0].searchEngine.setCache([O[k][1],O[k][0]], O[k]);
+								break;
+							}
+						}	
+					}
+				}
+			}//end for
+		}
+		
+		showClasses();
+		
+		function getAttrs(classId)
+		{
+			var html = '';
+			var attrId = id('属性');
+			var results = relation(function(r)
+			{
+				return ((r[0] == classId) && (r[1] == attrId));
+			});
+			
+			if(this.search)
+			{
+				this.search.resetCache();
+			}
+			else
+			{
+				this.search = new pinyinEngine();  //创建属性快速搜索
+			}
+			
+			for(var i=0; i<results.length; i++)
+			{
+				html += '<lable>' + name(results[i][2]) + ':</lable>';
+				this.search.setCache([name(results[i][2]), results[i][2]], name(results[i][2]));
+				html += '<input type="text" />';
+				var unit = relation(function(r)
+				{
+					return (r[0] == results[i][2]) && (r[1] == id('单位'));
+				});
+				if(unit.length)
+				{
+					html += name(unit[0][2]);
+				}
+				html += '<br />';
+			}
+			
+			$('#divAttrs').html(html);
+		}
+		$('#selClass').change(function()
+		{
+			getAttrs(this.value);
+		});
+		
+		$('#txtClass1').focus(function()
+		{
+			$('#selClass1').show();
+		});
+		
+		$('#selClass1').hide();
+		$('#txtClass1').blur(function()
+		{
+			window.setTimeout(function()
+			{
+				$('#selClass1').hide();
+			}, 100); //100毫秒后再隐藏，否则上面的占击事伯不能触发
+		});
+		$('#txtClass1').bind('keydown', function(e)
+		{
+			if(e.keyCode == 13) //ENTER, set the value of input
+			{
+                var v = $('#selClass1').val();
+				this.value = name(v);
+				showClasses();
+				window.setTimeout(function()
+				{
+					$('#selClass1').val(v);
+				}, 1);
+				e.preventDefault();
+				return false;
+			}
+			else if((e.keyCode == 38) || (e.keyCode == 37)) //UP or LEFT, to select previous option
+			{
+                var len = $('#selClass1')[0].options.length;
+				if(len)
+				{
+                    var i = $('#selClass1')[0].selectedIndex;
+					$('#selClass1')[0].selectedIndex = ((i==-1) || (i==0)) ? len-1 : i-1;
+				}
+			}
+			else if((e.keyCode == 40) || (e.keyCode == 39)) //DOWN or RIGHT, to select next option
+			{
+                var len = $('#selClass1')[0].options.length;
+				if(len)
+				{
+                    var i = $('#selClass1')[0].selectedIndex;
+					$('#selClass1')[0].selectedIndex = ((i==-1) || (i>=len-1)) ? 0 : i+1;
+				}
+			}
+			else
+			{
+					var input = this;
+					
+					if (this.value !== this.oldVal)
+					{
+						if(this.searchTimer)
+						{
+							window.clearTimeout(this.searchTimer);
+						}
+						this.searchTimer = window.setTimeout(function()
+						{
+							var html = '';
+							input.searchEngine.search(input.value, function(data)
+							{
+								html += '<option value="' + data[0] + '">' + data[1] + '(' + data[0] + ')' + '</option>'
+							});
+							$('#selClass1').empty();
+							$('#selClass1').append(html);
+
+							if($('#selClass1')[0].options.length)
+							{
+								$('#selClass1')[0].selectedIndex = 0;
+							}
+						}, 40);
+						
+					} //end if
+					
+					this.oldVal = this.value;
+			}//end else
+		});
+		
+		$('#selClass1').click(function()
+		{
+			if(_input.searchEngine)
+			{
+				_input.searchEngine.resetCache();
+			}
+			else
+			{
+				_input.searchEngine = new pinyinEngine(); //创建类快速搜索
+			}
+			
+			var srcEl = this;
+			window.setTimeout(function()
+			{
+				//将候选列表中的当前值赋给文本框
+				$('#txtClass1').val(name(srcEl.value));
+				
+				//用当前类的所有属性填充后面的属性候选列表
+				var theClass = srcEl.value;
+				var html = '';
+				var idOfAttr = id('属性');
+				var results = relation(function(r)
+				{
+					return ((r[0] == theClass) && (r[1] == idOfAttr));
+				});
+				for(var i=0; i<results.length; i++)
+				{
+					var unit = relation(function(r)
+					{
+						return (r[0] == results[i][2]) && (r[1] == id('单位'));
+					});
+					if(unit.length)
+					{
+						html += name(unit[0][2]);
+					}
+					html += '<option value="' + results[i][2] + '">' + name(results[i][2]) 
+						 + (unit.length ? ('('+ name(unit[0][2]) + ')') : '') + '</option>';
+					_input.searchEngine.setCache([name(results[i][2]),results[i][2]], [results[i][2], name(results[i][2])]);
+				}
+				
+				$('#selAttr1').empty();
+				$('#selAttr1').append(html);
+			}, 1);
+		});
+		
+		$('#txtAttr1').focus(function()
+		{
+			$('#selAttr1').show();
+		});
+		
+		$('#selAttr1').hide();
+		$('#txtAttr1').blur(function()
+		{
+			window.setTimeout(function()
+			{
+				$('#selAttr1').hide();
+			}, 100); //100毫秒后再隐藏，否则上面的占击事伯不能触发
+		});
+		
+
+		$('#txtAttr1').bind('keydown', function(e)
+		{
+			if(e.keyCode == 13) //ENTER, set the value of input
+			{
+                var v = _list.value;
+				this.value = name(v);
+				showClasses();
+				window.setTimeout(function()
+				{
+					_list.value = v;
+				}, 1);
+				
+				if (e.preventDefault) //if preventDefault exists run it on the original event
+				{
+					e.preventDefault();
+				}
+				else //otherwise set the returnValue property of the original event to false (IE)
+				{
+					e.returnValue = false;
+				}
+				
+				return false;
+			}
+			else if((e.keyCode == 38) || (e.keyCode == 37)) //UP or LEFT, to select previous option
+			{
+                var len = _list.options.length;
+				if(len)
+				{
+                    var i = _list.selectedIndex;
+					_list.selectedIndex = ((i==-1) || (i==0)) ? len-1 : i-1;
+				}
+			}
+			else if((e.keyCode == 40) || (e.keyCode == 39)) //DOWN or RIGHT, to select next option
+			{
+                var len = _list.options.length;
+				if(len)
+				{
+                    var i = _list.selectedIndex;
+					_list.selectedIndex = ((i==-1) || (i>=len-1)) ? 0 : i+1;
+				}
+			}
+			else
+			{
+					var input = this;
+					
+					if (this.value !== this.oldVal)
+					{
+						if(this.searchTimer)
+						{
+							window.clearTimeout(this.searchTimer);
+						}
+						this.searchTimer = window.setTimeout(function()
+						{
+							var html = '';
+							
+							while(_list.firstChild)
+							{
+								_list.removeChild(_list.firstChild );
+							}
+							
+							input.searchEngine.search(input.value, function(data)
+							{
+								var o = document.createElement('option');
+								_list.appendChild(o);
+								o.value = data[0];
+								o.text = data[1] + '(' + data[0] + ')';
+							});
+
+							if(_list.options.length)
+							{
+								_list.selectedIndex = 0;
+							}
+						}, 40);
+						
+					} //end if
+					
+					this.oldVal = this.value;
+			}//end else
+		});
+		
+		showEntity();
+		$('#btnAddEntity').click(function()
+		{
+			var id = (parseInt(O[O.length-1][0], 10) + 1).toString();
+			var format = '000';
+			id = format.substr(0, format.length-id.length) + id;
+			O.push([id, $('#txtEntity').val()]);
+			showEntity();
+			showRelation();
+			$('#txtEntity').focus();
+			$('#txtEntity').select();
+			return false;
+		});
+		
+		showRelation();
+		$('#btnAddRel').click(function()
+		{
+			R.push([$('#selSrc').val(), $('#selRel').val(), $('#selDst').val()]);
+			showRelation();
+			$('#selSrc').focus();
+			$('#selSrc').select();
+			return false;
+		});
+	});
+	</script>
+</head>
+<body>
+	<form id="formObj">
+    <fieldset>
+    <legend><strong>添加新实体</strong></legend>
+	<table>
+		<thead><tr><th>标号</th><th>名称</th></tr></thead>
+		<tbody id="tbdEntity">
+        </tbody>
+    </table>
+    实体名<input type="text" id="txtEntity" />
+    <input type="submit" id="btnAddEntity" value="添加" />
+    <span id="spanMsg"></span>
+    </fieldset>
+    
+    <fieldset class="relationBox">
+    <legend><strong>添加关系</strong></legend>
+	<table id="tabRel">
+		<thead><tr><th>源对象</th><th>关系键</th><th>目标对象</th></thead>
+		<tbody id="tbdRel">
+        </tbody>
+    </table>
+    <span>
+    <h4>源实体</h4>
+    <select id="selSrc"></select>
+    </span>
+    
+    <span>
+    <h4>关系键</h4>
+    <select id="selRel"></select>
+    </span>
+    
+    <span>
+    <h4>宿实体</h4>
+    <select id="selDst"></select>
+    </span>
+    <div>
+    <input type="submit" id="btnAddRel" value="添加" />
+    </div>
+    </fieldset>
+    
+    <fieldset>
+	<legend><strong>添加新类</strong></legend><br />
+	名称<input type="text" id="txtObjName" /><br />
+	类别
+    <select id="selClass" style="width:8em;">
+    <option value="0">请选择</option>
+    </select><br />
+	描述<div id="divAttrs"></div>
+	
+	<input type="submit" value="添加" />
+    </fieldset>
+    
+    <fieldset>
+    <lengend><strong>对象构建器</strong></lengend>
+    <p>
+    <label>名称</label>
+    <input type="text" id="txtObjName1" />
+    </p>
+    
+    <p>
+    <label>类别</label>
+    <input type="text" id="txtClass1" AUTOCOMPLETE="OFF" />
+    <select id="selClass1" multiple="multiple" tabindex="-1">
+    </select>
+    <p>
+    
+    <p>
+    <label>属性<label>
+    <input type="text" id="txtAttr1" />
+    <select id="selAttr1" multiple="multiple">
+	<option>1</option>
+    </select>
+    
+    &nbsp;=&nbsp;
+    <lable>值</label>
+    <input type="text" />
+    <select multiple="multiple">
+    </select>
+    </p>
+    
+    <input type="submit" id="btnAdd" value="添加" />
+    
+    </fieldset>
+	</form>
+</body>
+</html>
